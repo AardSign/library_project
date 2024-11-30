@@ -8,6 +8,7 @@ public class Cliente {
     private String nome;
     private String dataNascimento;
     private String preferencias;
+    
 
     // Construtor
     public Cliente(int id, String cpf, String telefone, String endereco, String nome, String dataNascimento, String preferencias) {

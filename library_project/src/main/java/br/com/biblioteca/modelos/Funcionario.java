@@ -8,9 +8,11 @@ public class Funcionario {
     private String nome;
     private String dataNascimento;
     private String funcao;
+    private String tipo; // "administrador" ou "funcionario"
+    private String senha; // Novo campo para armazenar a senha
 
     // Construtor
-    public Funcionario(int id, String cpf, String telefone, String endereco, String nome, String dataNascimento, String funcao) {
+    public Funcionario(int id, String cpf, String telefone, String endereco, String nome, String dataNascimento, String funcao, String tipo, String senha) {
         this.id = id;
         this.cpf = cpf;
         this.telefone = telefone;
@@ -18,6 +20,9 @@ public class Funcionario {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.funcao = funcao;
+        this.tipo = tipo;
+        this.senha = senha;
+        
     }
 
     // Getters e Setters
@@ -76,12 +81,35 @@ public class Funcionario {
     public void setFuncao(String funcao) {
         this.funcao = funcao;
     }
+    
+    public String getTipo() {
+        return tipo;
+    }
 
-    // Método toString
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
     @Override
     public String toString() {
-        return "Funcionario [id=" + id + ", cpf=" + cpf + ", telefone=" + telefone + ", endereco=" + endereco + 
-               ", nome=" + nome + ", dataNascimento=" + dataNascimento + ", funcao=" + funcao + "]";
+        return "Funcionario{" +
+                "id=" + id +
+                ", cpf='" + cpf + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", endereco='" + endereco + '\'' +
+                ", nome='" + nome + '\'' +
+                ", dataNascimento='" + dataNascimento + '\'' +
+                ", funcao='" + funcao + '\'' +
+                ", tipo='" + tipo + '\'' +
+                '}';
     }
 }
 

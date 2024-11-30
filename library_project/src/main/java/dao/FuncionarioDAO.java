@@ -24,10 +24,50 @@ public class FuncionarioDAO {
             stmt.setString(4, funcionario.getNome());
             stmt.setDate(5, Date.valueOf(funcionario.getDataNascimento()));
             stmt.setString(6, funcionario.getFuncao());
+            stmt.setString(7, funcionario.getTipo());
+            stmt.setString(8, funcionario.getSenha()); // Senha em texto simples
             stmt.executeUpdate();
         }
     }
+    
+    public boolean existeAdministrador() throws SQLException {
+        String sql = "SELECT COUNT(*) AS total FROM Funcionarios WHERE tipo = 'administrador'";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("total") > 0;
+                }
+            }
+        }
+        return false;
+    }
 
+
+    public Funcionario autenticarFuncionario(String cpf, String senha) throws SQLException {
+        String sql = "SELECT * FROM Funcionarios WHERE CPF = ? AND senha = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, cpf);
+            stmt.setString(2, senha);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Funcionario(
+                        rs.getInt("id"),
+                        rs.getString("CPF"),
+                        rs.getString("telefone"),
+                        rs.getString("endereco"),
+                        rs.getString("nome"),
+                        rs.getDate("data_nascimento").toString(),
+                        rs.getString("funcao"),
+                        rs.getString("tipo"),
+                        rs.getString("senha")
+                        
+                    );
+                }
+            }
+        }
+        return null; // Usuário ou senha inválidos
+    }
+    
     // Read (listar todos)
     public List<Funcionario> listarFuncionarios() throws SQLException {
         List<Funcionario> funcionarios = new ArrayList<>();
@@ -42,7 +82,9 @@ public class FuncionarioDAO {
                     rs.getString("endereco"),
                     rs.getString("nome"),
                     rs.getDate("data_nascimento").toString(),
-                    rs.getString("funcao")
+                    rs.getString("funcao"),
+                    rs.getString("tipo"),
+                    rs.getString("senha")
                 );
                 funcionarios.add(funcionario);
             }
@@ -64,7 +106,9 @@ public class FuncionarioDAO {
                         rs.getString("endereco"),
                         rs.getString("nome"),
                         rs.getDate("data_nascimento").toString(),
-                        rs.getString("funcao")
+                        rs.getString("funcao"),
+                        rs.getString("tipo"),
+                        rs.getString("senha")
                     );
                 }
             }
@@ -87,6 +131,30 @@ public class FuncionarioDAO {
         }
     }
 
+    // Buscar funcionário por CPF
+    public Funcionario buscarFuncionarioPorCpf(String cpf) throws SQLException {
+        String sql = "SELECT * FROM Funcionarios WHERE CPF = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, cpf);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Funcionario(
+                        rs.getInt("id"),
+                        rs.getString("CPF"),
+                        rs.getString("telefone"),
+                        rs.getString("endereco"),
+                        rs.getString("nome"),
+                        rs.getDate("data_nascimento").toString(),
+                        rs.getString("funcao"),
+                        rs.getString("tipo"), // Adicionando o campo 'tipo'
+                        rs.getString("senha")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+    
     // Delete
     public void excluirFuncionario(int id) throws SQLException {
         String sql = "DELETE FROM Funcionarios WHERE id = ?";

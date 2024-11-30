@@ -71,6 +71,52 @@ public class ClienteDAO {
         }
         return null;
     }
+    
+    // Buscar clientes por nome
+    public List<Cliente> buscarClientesPorNome(String nome) throws SQLException {
+        List<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT * FROM Clientes WHERE nome LIKE ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + nome + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    clientes.add(new Cliente(
+                        rs.getInt("id"),
+                        rs.getString("CPF"),
+                        rs.getString("telefone"),
+                        rs.getString("endereco"),
+                        rs.getString("nome"),
+                        rs.getDate("data_nascimento").toString(),
+                        rs.getString("preferencias")
+                    ));
+                }
+            }
+        }
+        return clientes;
+    }
+    
+    // Buscar cliente por CPF
+    public Cliente buscarClientePorCpf(String cpf) throws SQLException {
+        String sql = "SELECT * FROM Clientes WHERE CPF = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, cpf);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Cliente(
+                        rs.getInt("id"),
+                        rs.getString("CPF"),
+                        rs.getString("telefone"),
+                        rs.getString("endereco"),
+                        rs.getString("nome"),
+                        rs.getDate("data_nascimento").toString(),
+                        rs.getString("preferencias")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+    
 
     // Update
     public void atualizarCliente(Cliente cliente) throws SQLException {
@@ -95,5 +141,10 @@ public class ClienteDAO {
             stmt.executeUpdate();
         }
     }
+    
+
+
+    
+    
 }
 

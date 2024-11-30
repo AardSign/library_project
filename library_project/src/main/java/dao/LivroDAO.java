@@ -74,6 +74,124 @@ public class LivroDAO {
         }
         return null;
     }
+    
+ // Buscar livros por título
+    public List<Livro> buscarLivrosPorTitulo(String titulo) throws SQLException {
+        List<Livro> livros = new ArrayList<>();
+        String sql = "SELECT * FROM Livros WHERE nome LIKE ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + titulo + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    livros.add(new Livro(
+                        rs.getInt("id"),
+                        rs.getString("codigo_barras"),
+                        rs.getString("nome"),
+                        rs.getString("autor"),
+                        rs.getString("edicao"),
+                        rs.getString("categoria"),
+                        rs.getInt("quantidade"),
+                        rs.getBoolean("disponibilidade")
+                    ));
+                }
+            }
+        }
+        return livros;
+    }
+    
+ // Listar livros disponíveis
+    public List<Livro> listarLivrosDisponiveis() throws SQLException {
+        List<Livro> livros = new ArrayList<>();
+        String sql = "SELECT * FROM Livros WHERE disponibilidade = TRUE";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                livros.add(new Livro(
+                    rs.getInt("id"),
+                    rs.getString("codigo_barras"),
+                    rs.getString("nome"),
+                    rs.getString("autor"),
+                    rs.getString("edicao"),
+                    rs.getString("categoria"),
+                    rs.getInt("quantidade"),
+                    rs.getBoolean("disponibilidade")
+                ));
+            }
+        }
+        return livros;
+    }
+    
+    // Buscar livro por código de barras
+    public Livro buscarLivroPorCodigoBarras(String codigoBarras) throws SQLException {
+        String sql = "SELECT * FROM Livros WHERE codigo_barras = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, codigoBarras);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Livro(
+                        rs.getInt("id"),
+                        rs.getString("codigo_barras"),
+                        rs.getString("nome"),
+                        rs.getString("autor"),
+                        rs.getString("edicao"),
+                        rs.getString("categoria"),
+                        rs.getInt("quantidade"),
+                        rs.getBoolean("disponibilidade")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+    
+    // Buscar livros por autor
+    public List<Livro> buscarLivrosPorAutor(String autor) throws SQLException {
+        String sql = "SELECT * FROM Livros WHERE autor LIKE ?";
+        List<Livro> livros = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + autor + "%"); // Busca parcial
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    livros.add(new Livro(
+                        rs.getInt("id"),
+                        rs.getString("codigo_barras"),
+                        rs.getString("nome"),
+                        rs.getString("autor"),
+                        rs.getString("edicao"),
+                        rs.getString("categoria"),
+                        rs.getInt("quantidade"),
+                        rs.getBoolean("disponibilidade")
+                    ));
+                }
+            }
+        }
+        return livros; // Retorna a lista de livros
+    }
+    
+    public List<Livro> buscarLivrosPorCategoria(String categoria) throws SQLException {
+        String sql = "SELECT * FROM Livros WHERE categoria LIKE ?";
+        List<Livro> livros = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + categoria + "%"); // Busca parcial
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    livros.add(new Livro(
+                        rs.getInt("id"),
+                        rs.getString("codigo_barras"),
+                        rs.getString("nome"),
+                        rs.getString("autor"),
+                        rs.getString("edicao"),
+                        rs.getString("categoria"),
+                        rs.getInt("quantidade"),
+                        rs.getBoolean("disponibilidade")
+                    ));
+                }
+            }
+        }
+        return livros; // Retorna a lista de livros
+    }
+    
+    
 
     // Update
     public void atualizarLivro(Livro livro) throws SQLException {
@@ -91,6 +209,9 @@ public class LivroDAO {
         }
     }
 
+
+    
+    
     // Delete
     public void excluirLivro(int id) throws SQLException {
         String sql = "DELETE FROM Livros WHERE id = ?";
